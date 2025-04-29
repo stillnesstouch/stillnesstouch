@@ -1,4 +1,4 @@
-<b>Master Classes and Private Intensives Are Based on the book <i>Stillness Touch Union of Body And Love</i></b> 
+<b>Master Classes and Private Intensives are based on the book <i>Stillness Touch Union of Body And Love</i></b> 
 
 <!--
 **stillnesstouch/stillnesstouch** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
