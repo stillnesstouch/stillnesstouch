@@ -1,0 +1,119 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stillness Touch Master Class 1 Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-6 text-center">Stillness Touch Master Class 1</h1>
+        <form id="registrationForm" action="https://formspree.io/f/xzzrbnde" method="POST" class="space-y-4">
+            <div>
+                <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+                <input type="text" id="fullName" name="fullName" required class="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-blue-300">
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                <input type="email" id="email" name="email" required class="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-blue-300">
+            </div>
+            <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input type="tel" id="phone" name="phone" required class="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-blue-300">
+            </div>
+            <div>
+                <label for="experience" class="block text-sm font-medium text-gray-700">
+                    When you write your name below, you acknowledge the pricing and refund policies as outlined below:<br></br>
+                    PRICE: $930.00 until June 1, then $995.00.<br></br>
+                    REFUND: You will receive 100% refund before August 10, 2025, after that no refunds for any reason.
+                </label>
+                <textarea id="experience" name="experience" rows="4" required class="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-blue-300"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition">Submit Registration</button>
+        </form>
+        <p id="formMessage" class="text-center mt-4 hidden text-green-600">Registration submitted successfully! Check your email for confirmation.</p>
+    </div>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = {
+                fullName: formData.get('fullName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                experience: formData.get('experience')
+            };
+
+            // Basic validation (HTML5 required fields already enforce some checks)
+            if (!data.fullName || !data.email || !data.phone || !data.experience) {
+                alert('Please fill out all required fields.');
+                return;
+            }
+
+            try {
+                // Submit to Formspree
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Show success message
+                    document.getElementById('formMessage').classList.remove('hidden');
+                    form.reset(); // Clear the form
+                } else {
+                    alert('Error submitting registration. Please try again.');
+                }
+            } catch (error) {
+                alert('Error submitting registration: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
