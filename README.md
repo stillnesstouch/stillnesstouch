@@ -1,4 +1,4 @@
-Please Write Your Check Number for tracking: 
+<b>Please Write Your Check Number for tracking:</b> 
 
 <!--
 **stillnesstouch/stillnesstouch** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
